@@ -1,0 +1,81 @@
+
+    <div class="container ">
+    <div class="row col-4">
+        <h3>Create a new order</h3>
+    </div>
+    <form [formGroup]="productsForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+            <div class="col">
+                <label for="exampleInputEmail1" class="form-label">Nombre</label>
+                <input type="text" class="form-control"  aria-label="" formControlName="name">
+            </div>
+            <div class="col">
+                <label for="exampleInputEmail1" class="form-label">Email</label>
+                <input type="text" class="form-control" aria-label="" formControlName="email" >
+            </div>        
+        </div>
+
+        <div class="card mt-4 mb-4" formArrayName="products">
+            <div class="card-header d-flex justify-content-between">
+            <h5>Productos</h5>
+            <button class="btn btn-primary"type="button" (click)="addProduct()">+</button>
+            </div>
+            <div class="card-body">
+                @if(productsForm.get("products")?.getError("noProduct")) {
+                    <p style="color:red">Debe seleccionar al menos un producto</p>
+                }
+            @for(product of products.controls;track $index){
+                <div class="row" [formGroupName]="$index">
+                    <div class="col">
+                        <label for="exampleInputEmail1" class="form-label">Producto: </label>
+                        <select class="form-select" aria-label="Default select example" formControlName="productName">
+                            <option value="" selected>Producto</option>
+                          @for(apiProduct of apiProductArray; track apiProduct) {
+                            <option [value]=apiProduct.name>{{apiProduct.name}}</option>
+                          }
+                        </select>
+                          @if(productsForm.get('products')?.getError("duplicateProducts")) {
+                            <p style="color:red">El producto ya ha sido seleccionado</p>
+                        }
+                        
+                    </div>
+                    <div class="col">
+                        <label for="product-{{$index}}" class="form-label">Cantidad</label>
+                          <input type="number" class="form-control" id="product-quantity-{{$index}}" formControlName="quantity" >
+                    </div>
+                    <div class="col">
+                        <label for="product-{{$index}}" class="form-label">Precio</label>
+                          <input type="number" class="form-control" id="product-price-{{$index}}" formControlName="price" [ngModel]="apiProductArray[$index].price">
+                    </div>
+                    <div class="col">
+                        <label for="product-{{$index}}" class="form-label">Stock</label>
+                          <input type="number" class="form-control" id="product-stock-{{$index}}" formControlName="stock" [ngModel]="apiProductArray[$index].stock">
+                    </div>
+                    <div class="col">
+                        
+                        <button class="btn btn-danger mt-4" type="button" (click)="removeProduct($index)">X</button>
+                    </div>
+                </div>
+                
+            }
+            
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+              Produtos Seleccionados
+            </div>
+            <div class="card-body">
+              <ul>
+                @for(product of products.controls; track product){
+                    <li>{{product.get("productName")?.value| json}}</li>
+                }
+              </ul>
+            </div>
+        </div>
+
+        
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
