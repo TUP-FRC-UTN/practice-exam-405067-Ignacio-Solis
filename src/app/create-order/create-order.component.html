@@ -12,6 +12,9 @@
             <div class="col">
                 <label for="exampleInputEmail1" class="form-label">Email</label>
                 <input type="text" class="form-control" aria-label="" formControlName="email" >
+                @if(productsForm.get('email')?.getError("exceedsOrders")) {
+                    <p style="color:red">Este cliente ha excedido las 3 compras</p>
+                }
             </div>        
         </div>
 
@@ -29,7 +32,7 @@
                     <div class="col">
                         <label for="exampleInputEmail1" class="form-label">Producto: </label>
                         <select class="form-select" aria-label="Default select example" formControlName="productName">
-                            <option value="" selected>Producto</option>
+                            <option value="Producto" selected>Producto</option>
                           @for(apiProduct of apiProductArray; track apiProduct) {
                             <option [value]=apiProduct.name>{{apiProduct.name}}</option>
                           }
@@ -45,11 +48,11 @@
                     </div>
                     <div class="col">
                         <label for="product-{{$index}}" class="form-label">Precio</label>
-                          <input type="number" class="form-control" id="product-price-{{$index}}" formControlName="price" [ngModel]="apiProductArray[$index].price">
+                          <input type="number" class="form-control" id="product-price-{{$index}}" formControlName="price">
                     </div>
                     <div class="col">
                         <label for="product-{{$index}}" class="form-label">Stock</label>
-                          <input type="number" class="form-control" id="product-stock-{{$index}}" formControlName="stock" [ngModel]="apiProductArray[$index].stock">
+                          <input type="number" class="form-control" id="product-stock-{{$index}}" formControlName="stock" >
                     </div>
                     <div class="col">
                         
@@ -60,20 +63,28 @@
             }
             
             </div>
+
+            
         </div>
-        
-        <div class="card">
+        <div class="card mt-4">
             <div class="card-header">
-              Produtos Seleccionados
+              Productos Seleccionados
             </div>
             <div class="card-body">
               <ul>
                 @for(product of products.controls; track product){
-                    <li>{{product.get("productName")?.value| json}}</li>
+                    <li>Producto: {{product.get("productName")?.value}}
+
+                         - Cantidad: {{product.get("quantity")?.value}}
+                         - Precio: {{product.get("price")?.value}}
+                         - Stock: {{product.get("stock")?.value}}
+
+                    </li>
                 }
               </ul>
             </div>
         </div>
+        
 
         
         <button type="submit" class="btn btn-primary">Submit</button>
